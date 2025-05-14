@@ -23,3 +23,15 @@ class playStack:
     def __init__(self):
         self.stack = []
     
+    # return 1 if success, -1 if not
+    def playCard(self, card: Card):
+        if (len(self.stack) == 0):        
+            self.stack.append(card)
+            return 1
+        else:
+            last = len(self.stack) - 1
+            if (card.gte(self.stack[last])):
+                self.stack.append(card)
+                return 1
+            else:
+                return -1
