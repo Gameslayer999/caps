@@ -22,19 +22,39 @@ class Player:
     # returns card if successful, otherwise returns null/none
     def playCard(self, cardRank, *args):
         rank = rankToNum(cardRank)
+        multiples = 1
         suit = None
         if len(args) != 0:
-            suit = args[0]
+            match args[0]:
+                case '1' | '2' | '3' | '4':
+                    multiples = int(args[0])
+                case "H" | "D" | "C" | "S":
+                    suit = args[0]
     
-        for i in range(len(self.hand)):
+        count = 0
+        ret = []
+        i = 0
+        while i < len(self.hand):
             if (suit is None): # didn't specify suit
-                if int(self.hand[i].rank) == rank:
-                    return self.hand.pop(i)
-            else:
+                if int(self.hand[i].rank) == rank and count < multiples:
+                    ret.append(self.hand.pop(i))
+                    count += 1
+                else:
+                    i += 1
+            else: # suit specified
                 if int(self.hand[i].rank == rank) and self.hand[i].suit == suit:
-                    return self.hand.pop(i)
-        
-        return None
+                    ret.append(self.hand.pop(i))
+                i += 1
+                
+        if len(ret) != multiples:
+            # didn't have enough cards to play, so put them back in the hand
+            self.hand.extend(ret)
+            return []
+        else:
+            return ret
+    
+    def finished(self):
+        return len(self.hand) == 0
     
 class Card:
     def __init__(self, suit, rank):
@@ -123,24 +143,24 @@ class playStack:
         self.stack = []
     
     # return 1 if success, -1 if not
-    def playCard(self, card: Card):
+    def playCard(self, cards):
         #the format of the stack is that it is an array of arrays of different card ranks
         # so, if there were three threes played and then a four, the stack looks like: [[3,3,3]. [4]]
         # this way its easy to check if we have 4 of a kind
-        if (len(self.stack) == 0):        
-            self.stack.append([card])
+        if (len(self.stack) == 0):
+            self.stack.append(cards)
             return 1
         else:
-            if card.rank == 2: # you can always play a 2
-                self.stack.append([card])
+            if cards[0].rank == 2: # you can always play a 2
+                self.stack.append(cards)
                 return 1
 
             last = len(self.stack) - 1
-            if (card.gte(self.stack[last][0])): # if playable
-                if (card.rank == self.stack[last][0].rank):
-                    self.stack[last].append(card)
+            if (cards[0].gte(self.stack[last][0])): # if playable
+                if (cards[0].rank == self.stack[last][0].rank):
+                    self.stack[last].extend(cards)
                 else:
-                    self.stack.append([card])
+                    self.stack.append(cards)
                 return 1
             else:
                 return -1

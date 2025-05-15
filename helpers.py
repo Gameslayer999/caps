@@ -21,9 +21,9 @@ def evenly_split(number, parts):
 
 def printHelp():
     print("""
-sh <playernumber>: show hand of specified player. Use -s flag to simplify output
+sh <player number>: show hand of specified player. Use -s flag to simplify output
 cen: show cards in the center
-pl <playernumber> <card> <suit?>: play first instance of specified card from specified player's hand. Suit is optional and must be "H", "D", "C", or "S"
+pl <player number> <card> <number/suit?>: play first instance of specified card from specified player's hand. Suit is optional and must be "H", "D", "C", or "S"
 pass: current player passes
 turn: whose turn is it?
 quit: quit the game
